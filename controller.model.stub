@@ -1,0 +1,63 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class {{ class }} extends Controller
+{
+    public function index()
+    {
+        ${{ modelVariable }} = {{ namespacedModel }}::latest()->paginate(5);
+        return view('products.index',compact('products'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
+    }
+
+    public function create()
+    {
+        return view('products.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'detail' => 'required',
+        ]);
+  
+        {{ namespacedModel }}::create($request->all());
+        return redirect()->route('products.index')
+                        ->with('success','Product created successfully.');
+    }
+
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        return view('products.show',compact('product'));
+    }
+
+    public function edit({{ model }} ${{ modelVariable }})
+    {
+        return view('products.edit',compact('product'));
+    }
+
+    public function update(Request $request, {{ model }} ${{ modelVariable }})
+    {
+        $request->validate([
+            'name' => 'required',
+            'detail' => 'required',
+        ]);
+        $product->update($request->all());
+        return redirect()->route('products.index')
+                        ->with('success','Product updated successfully');
+    }
+
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        $product->delete();
+  
+        return redirect()->route('products.index')
+                        ->with('success','Product deleted successfully');
+    }
+}
